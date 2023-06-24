@@ -1,5 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+/* color palette bruteexpose */
+:root {
+  --be-c-white: #ffffff;
+  --be-c-white-soft: #f8f8f8;
+  --be-c-white-mute: #f2f2f2;
+
+  --be-c-black: #12151c;
+  --be-c-black-mute: #151619;
+
+  --be-c-red: #661b1c;
+  --be-c-red-darker: #531516;
+
+  --be-c-green: #1c661b;
+  --be-c-green-darker: #163531;
+}
+
+:root {
+  --color-background: var(--be-c-black);
+  --color-background-mute: var(--be-c-black-mute);
+
+  --color-border-background: var(--be-c-red);
+
+  --color-text: var(--be-c-white);
+
+  --logger-status-blocked: var(--be-c-red-darker);
+  --logger-status-success: var(--be-c-green-darker);
+  --logger-status-font: monospace;
+  --logger-item-spacing: 2rem;
+}
+
+
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
+  /*
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
@@ -19,10 +53,12 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+   */
 }
 
 /* semantic color variables for this project */
 :root {
+  /*
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
@@ -34,10 +70,12 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+   */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /*
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
@@ -47,6 +85,7 @@
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text: var(--vt-c-text-dark-2);
+     */
   }
 }
 
@@ -55,9 +94,23 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
   font-weight: normal;
 }
 
+body {
+  min-height: 100vh;
+  background: var(--color-background);
+  color: var(--be-c-white);
+  line-height: 1.6;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*
 body {
   min-height: 100vh;
   color: var(--color-text);
@@ -71,3 +124,4 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+ */
