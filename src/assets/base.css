@@ -7,6 +7,7 @@
   --be-c-white-mute: #f2f2f2;
 
   --be-c-black: #12151c;
+  --be-c-black-light: #252526;
   --be-c-black-mute: #151619;
 
   --be-c-red: #661b1c;
@@ -27,8 +28,15 @@
   --logger-status-blocked: var(--be-c-red-darker);
   --logger-status-success: var(--be-c-green-darker);
   --logger-status-font: monospace;
-  --logger-border-color: var(--be-c-green);
+
+  --logger-border-color: var(--be-c-black-light);
+
   --logger-item-spacing: 2rem;
+
+  --logger-col-font-size: 0.7rem;
+  --logger-col-width: 100px;
+  --logger-col-min-width: 50px;
+  --logger-col-text-align: center;
 }
 
 

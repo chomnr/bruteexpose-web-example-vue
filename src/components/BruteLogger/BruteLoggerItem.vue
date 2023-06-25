@@ -3,27 +3,44 @@
 </script>
 
 <template>
-  <tbody>
-    <tr class="logger-item">
-      <td><slot name="region"></slot></td>
-      <td><slot name="username"></slot></td>
-      <td><slot name="password"></slot></td>
-      <td><slot name="hostname"></slot></td>
-      <td><slot name="protocol"></slot></td>
-  </tr>
-  </tbody>
+  <div class="log-entry">
+    <div class="col status failed">FAILED</div>
+    <div class="col"><slot name="country"></slot></div>
+    <div class="col"><slot name="username"></slot></div>
+    <div class="col"><slot name="password"></slot></div>
+    <div class="col"><slot name="source"></slot></div>
+    <div class="col"><slot name="protocol"></slot></div>
+  </div>
 </template>
-
 <style scoped>
 
-@media (min-width: 1024px) {
-  .logger-item {
-    font-size: 0.95rem;
-  }
-  .logger-item .region {}
-  .logger-item .username {}
-  .logger-item .password {}
-  .logger-item .hostname {}
-  .logger-item .protocol {}
+.log-entry {
+  display: flex;
+  justify-content: center;
+}
+
+.log-entry.header {
+  display: flex;
+}
+
+.col {
+  flex: 1;
+  font-size: var(--logger-col-font-size);
+  width: var(--logger-col-width);
+  min-width: var(--logger-col-min-width);
+  text-align: var(--logger-col-text-align);
+}
+
+.col.status {
+  font-family: var(--logger-status-font);
+  min-width: 10px;
+}
+
+.col.status.success {
+  background: var(--logger-status-success);
+}
+
+.col.status.failed {
+  background: var(--logger-status-blocked);
 }
 </style>

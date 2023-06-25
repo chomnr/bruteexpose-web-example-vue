@@ -10,109 +10,28 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
     <div class="description">
       The implemented system continuously monitors and promptly reports any unauthorized access attempts on my server. Since no data or services are hosted on the server, neither myself nor any other individuals are at risk.
       <br><br>
+      Repo: <a href="https://github.com/chomnr/BruteExpose">https://github.com/chomnr/BruteExpose</a>
+      <br><br>
       You can view the analytics <a href="#">here</a>.
     </div>
     <div class="log-table">
-        <div class="log-entry header">
-          <div class="col"></div>
-          <div class="col">Country</div>
-          <div class="col">Username</div>
-          <div class="col">Password</div>
-          <div class="col">Source</div>
-          <div class="col">Protocol</div>
-        </div>
-      <div class="log-entry">
-        <div class="col status failed">FAILED</div>
-        <div class="col">US</div>
-        <div class="col">Hendrickdssd</div>
-        <div class="col">pinhead</div>
-        <div class="col">72.0.31.34.1</div>
-        <div class="col">SSH</div>
-      </div>
-      <div class="log-entry">
-        <div class="col status failed">FAILED</div>
-        <div class="col">US</div>
-        <div class="col">Hendrickdssd</div>
-        <div class="col">pinhead</div>
-        <div class="col">72.0.31.34.1</div>
-        <div class="col">SSH</div>
-      </div>
-      <div class="log-entry">
-        <div class="col status success">SUCCESS</div>
-        <div class="col">US</div>
-        <div class="col">dd</div>
-        <div class="col">pinhead</div>
-        <div class="col">72.0.31.34.1</div>
-        <div class="col">SSH</div>
-      </div>
+      <BruteLoggerTitle/>
+      <BruteLoggerItem>
+        <template #country>US</template>
+        <template #username>root</template>
+        <template #password>rootin12#!</template>
+        <template #source>72.0.31.34.1</template>
+        <template #protocol>SSH</template>
+      </BruteLoggerItem>
+      <BruteLoggerItem>
+        <template #country>US</template>
+        <template #username>root</template>
+        <template #password>rootin12#!</template>
+        <template #source>72.0.31.34.1</template>
+        <template #protocol>SSH</template>
+      </BruteLoggerItem>
     </div>
   </div>
-    <!--
-    <div class="log-block">
-        <div class="log">
-          <div class="data">Region</div>
-          <div class="data">Username</div>
-          <div class="data">Password</div>
-          <div class="data">Source</div>
-          <div class="data">Protocol</div>
-        </div>
-    </div>
-    -->
-    <!--
-    <div class="log-block">
-      <div class="log title">
-        <ul>
-          <li class="data">Region</li>
-          <li class="data">Username</li>
-          <li class="data">Password</li>
-          <li class="data">Source</li>
-          <li class="data">Protocol</li>
-        </ul>
-      </div>
-      <div class="log">
-        <ul>
-          <li class="status failed">FAILED</li>
-          <li class="data">US</li>
-          <li class="data">root</li>
-          <li class="data">rootwizard123!</li>
-          <li class="data">12.1.434.31</li>
-          <li class="data">SSH</li>
-        </ul>
-      </div>
-      <div class="log">
-        <ul>
-          <li class="status failed">FAILED</li>
-          <li class="data">IR</li>
-          <li class="data">admin</li>
-          <li class="data">adminplesk</li>
-          <li class="data">13.451.132.31</li>
-          <li class="data">SSH</li>
-        </ul>
-      </div>
-    </div>
-    -->
-  <!--
-  <div class="log-entry">
-          <ul>
-            <li>CN</li>
-            <li>SSH</li>
-          </ul>
-        </div>
-
-  <table class="logger-list">
-    <BruteLoggerTitle></BruteLoggerTitle>
-    <BruteLoggerItem>
-      <template #region>CN</template>
-      <template #username>root</template>
-      <template #password>root123!</template>
-      <template #hostname>123.13.21.433</template>
-      <template #protocol>SSH</template>
-    </BruteLoggerItem>
-
-  </table>
-  -->
-  <!--todo: title, body-->
-
 </template>
 
 
@@ -128,7 +47,7 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
  }
 
  .description {
-   border-left: 1px solid var(--logger-border-color);
+   border-left: 2px solid var(--logger-border-color);
    font-size: 0.75rem;
    padding-left: 0.5rem;
  }
