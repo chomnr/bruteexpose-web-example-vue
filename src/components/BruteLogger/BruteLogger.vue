@@ -6,6 +6,12 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 
 <template>
   <div class="be-logger">
+    <div class="title">BruteExpose</div>
+    <div class="description">
+      The implemented system continuously monitors and promptly reports any unauthorized access attempts on my server. Since no data or services are hosted on the server, neither myself nor any other individuals are at risk.
+      <br><br>
+      You can view the analytics <a href="#">here</a>.
+    </div>
     <div class="log-table">
         <div class="log-entry header">
           <div class="col"></div>
@@ -34,7 +40,7 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
       <div class="log-entry">
         <div class="col status success">SUCCESS</div>
         <div class="col">US</div>
-        <div class="col">Hendrickdssd</div>
+        <div class="col">dd</div>
         <div class="col">pinhead</div>
         <div class="col">72.0.31.34.1</div>
         <div class="col">SSH</div>
@@ -114,25 +120,42 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
  .be-logger {
    display: flex;
    flex-direction: column;
-   /*border-spacing: var(--logger-item-spacing);*/
+   padding: 5px;
+ }
+
+ .title {
+   font-size: 3rem;
+ }
+
+ .description {
+   border-left: 1px solid var(--logger-border-color);
+   font-size: 0.75rem;
+   padding-left: 0.5rem;
  }
 
  .be-logger .log-table {
    display: flex;
    flex-direction: column;
    justify-content: space-evenly;
+   margin-top: 10px;
    gap: 2px;
  }
 
- .log-entry { display: flex; }
- .log-entry.header { display: flex; }
- .log-entry.header > * { font-size: 0.95rem }
+ .log-entry {
+   display: flex;
+   justify-content: center;
+ }
+
+ .log-entry.header {
+   display: flex;
+ }
 
  .col {
-    flex: 1;
-    font-size: 0.7rem;
-    min-width: 100px;
-    text-align: center;
+   flex: 1;
+   font-size: 0.7rem;
+   width: 100px;
+   min-width: 50px;
+   text-align: center;
  }
 
  .col.status {
@@ -146,6 +169,13 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 
  .col.status.failed {
    background: var(--logger-status-blocked);
+ }
+
+ @media (min-width: 1024px) {
+   .be-logger {
+     max-width: 700px;
+     padding: 0;
+   }
  }
 
 
