@@ -5,7 +5,6 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 </script>
 
 <template>
-
   <div class="title">BruteExpose</div>
   <div class="description">
       <div class="websocket-status failed" v-if="!reactivity.isConnected">STATUS: <b>NOT CONNECTED</b></div>
