@@ -17,7 +17,6 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
     </div>
     <div id="brute-log" class="log-table">
       <BruteLoggerTitle/>
-
       <brute-logger-item v-for="attempt in attempts">
         <template #country>{{ attempt["country"] }}</template>
         <template #username>{{ attempt["username"] }}</template>
@@ -25,27 +24,11 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
         <template #source>{{ attempt["hostname"] }}</template>
         <template #protocol>{{ attempt["protocol"] }}</template>
       </brute-logger-item>
-      <!--
-      <BruteLoggerItem>
-        <template #country>US</template>
-        <template #username>root</template>
-        <template #password>rootin12#!</template>
-        <template #source>72.0.31.34.1</template>
-        <template #protocol>SSH</template>
-      </BruteLoggerItem>
-      <BruteLoggerItem>
-        <template #country>US</template>
-        <template #username>root</template>
-        <template #password>rootin12#!</template>
-        <template #source>72.0.31.34.1</template>
-        <template #protocol>SSH</template>
-      </BruteLoggerItem>
-      -->
     </div>
   </div>
 </template>
-<script>
 
+<script>
 import {ref, VueElement, watchEffect} from "vue";
 
 const socket = new WebSocket("ws://localhost:8080");
@@ -101,5 +84,4 @@ socket.addEventListener('message', (event) => {
      padding: 0;
    }
  }
-
 </style>
