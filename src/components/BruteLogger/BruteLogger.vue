@@ -8,14 +8,24 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
   <div class="be-logger">
     <div class="title">BruteExpose</div>
     <div class="description">
-      The implemented system continuously monitors and promptly reports any unauthorized access attempts on my server. Since no data or services are hosted on the server, neither myself nor any other individuals are at risk.
+      This website continuously monitors and promptly reports any unauthorized access attempts on my server using BruteExpose. Since no data or services are hosted on the server, neither myself nor any other individuals are at risk.
+
       <br><br>
       Repo: <a href="https://github.com/chomnr/BruteExpose">https://github.com/chomnr/BruteExpose</a>
       <br><br>
       You can view the analytics <a href="#">here</a>.
     </div>
-    <div class="log-table">
+    <div id="brute-log" class="log-table">
       <BruteLoggerTitle/>
+
+      <brute-logger-item v-for="attempt in attempts">
+        <template #country>{{ attempt["country"] }}</template>
+        <template #username>{{ attempt["username"] }}</template>
+        <template #password>{{ attempt["password"] }}</template>
+        <template #source>{{ attempt["hostname"] }}</template>
+        <template #protocol>{{ attempt["protocol"] }}</template>
+      </brute-logger-item>
+      <!--
       <BruteLoggerItem>
         <template #country>US</template>
         <template #username>root</template>
@@ -30,10 +40,35 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
         <template #source>72.0.31.34.1</template>
         <template #protocol>SSH</template>
       </BruteLoggerItem>
+      -->
     </div>
   </div>
 </template>
+<script>
 
+import {ref, VueElement, watchEffect} from "vue";
+
+const socket = new WebSocket("ws://localhost:8080");
+
+let attempts = ref([]);
+
+socket.addEventListener('message', (event) => {
+  const response = event.data;
+  try {
+    const res_json = JSON.parse(response.toString());
+    if (res_json.length > 1) {
+      res_json.forEach((log) => {
+        attempts.value.push(log);
+      })
+      return true;
+    }
+    attempts.value.push(res_json);
+    attempts.value.unshift(res_json);
+  } catch (error) {
+    return false;
+  }
+})
+</script>
 
 <style scoped>
  .be-logger {
@@ -60,36 +95,6 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
    gap: 2px;
  }
 
- .log-entry {
-   display: flex;
-   justify-content: center;
- }
-
- .log-entry.header {
-   display: flex;
- }
-
- .col {
-   flex: 1;
-   font-size: 0.7rem;
-   width: 100px;
-   min-width: 50px;
-   text-align: center;
- }
-
- .col.status {
-   font-family: var(--logger-status-font);
-   min-width: 10px;
- }
-
- .col.status.success {
-   background: var(--logger-status-success);
- }
-
- .col.status.failed {
-   background: var(--logger-status-blocked);
- }
-
  @media (min-width: 1024px) {
    .be-logger {
      max-width: 700px;
@@ -97,70 +102,4 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
    }
  }
 
-
- /*
- .be-logger .log-block {
-   display: table;
-   flex-direction: column;
-   gap: 3px;
-   width: 100%;
- }
-
- .be-logger .log-block .log {
-   display: table-row;
- }
-
- .be-logger .log-block .log ul.title {
-   margin: 0;
-   padding: 0;
-   display: table-cell;
- }
-
- .be-logger .log-block .log ul {
-   display: flex;
-   align-items: center;
-   list-style: none;
-   padding: 0;
- }
-
- .be-logger .log-block .log li.data {
-   padding: 5px 5px;
-   font-size: 0.8rem;
-   background: var(--color-background);
- }
-
- .be-logger .log-block .status {
-   font-family: var(--logger-status-font);
-   font-size: 0.6rem;
-   padding: 0.3rem 4px;
-   text-align: center;
-   width: 50px;
- }
-
- .be-logger .log-block .log .status.success {
-   background: var(--logger-status-success);
- }
-
- .be-logger .log-block .log .status.failed {
-   background: var(--logger-status-blocked);
- }
-  */
 </style>
-<!--
-<ul class="logger-list">
- <BruteLoggerItem>
-   <template #region>CN</template>
-   <template #username>root</template>
-   <template #password>root123!</template>
-   <template #hostname>123.13.21.433</template>
-   <template #protocol>SSH</template>
- </BruteLoggerItem>
- <BruteLoggerItem>
-   <template #region>CN</template>
-   <template #username>root</template>
-   <template #password>root123!</template>
-   <template #hostname>123.13.21.433</template>
-   <template #protocol>SSH</template>
- </BruteLoggerItem>
-</ul>
--->
