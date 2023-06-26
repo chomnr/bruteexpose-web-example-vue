@@ -19,10 +19,6 @@
   justify-content: center;
 }
 
-.log-entry.header {
-  display: flex;
-}
-
 .col {
   flex: 1;
   font-size: var(--logger-col-font-size);
@@ -43,5 +39,6 @@
 .col.status.failed {
   background: var(--logger-status-blocked);
 }
+
 
 </style>
