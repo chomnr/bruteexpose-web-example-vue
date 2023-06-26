@@ -71,13 +71,11 @@ function connectToSocket(){
 
   socket.addEventListener('open', (event) => {
     reactivity.isConnected = true;
-    console.log("connected.")
     clearInterval(reconnect)
   });
 
   socket.onclose = function (event) {
     reactivity.isConnected = false;
-    console.log("disconnected.")
     if (!reactivity.isConnected) {
       reconnect = setInterval(connectToSocket, RECONNECT_TIME)
     }
