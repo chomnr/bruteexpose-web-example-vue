@@ -16,6 +16,9 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
     Repo: <a href="https://github.com/chomnr/BruteExpose">https://github.com/chomnr/BruteExpose</a>
     <br>
   </div>
+  <div class="analytics">
+    <Bar :data="chartData" :options="options"  width="150" height="150" />
+  </div>
   <div class="be-logger">
     <BruteLoggerTitle/>
     <div id="brute-log" class="log-table">
@@ -32,6 +35,13 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 
 <script>
 import {reactive} from "vue";
+
+/* Charts */
+import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+/* Charts end here. */
 
 const SOCKET_ADDRESS = "ws://localhost:8080";
 const RECONNECT_TIME = (5 * 1000);
@@ -80,6 +90,74 @@ function connectToSocket(){
     }
   }
 }
+
+export default {
+  name: 'BarChart',
+  components: { Bar },
+  data() {
+    return {
+      chartData: {
+        labels: [ 'US', 'UK', 'CN', "IR", "AF", "KR", "PG", "ZE", "DA", "ND"],
+        datasets: [
+          {
+            label: 'Most Attacks By Country',
+            backgroundColor: '#163531',
+            data: [10000, 5000, 300]
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      }
+    }
+  }
+}
+
+/*
+export default {
+  name: 'App',
+  components: {
+    Bar
+  },
+  data() {
+    return {
+      data: {
+        labels: [
+          'January',
+          'February',
+          'March',
+          'April',
+          'May',
+          'June',
+          'July',
+          'August',
+          'September',
+          'October',
+          'November',
+          'December'
+        ],
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    }
+  }
+}
+*/
 </script>
 
 <style scoped>
@@ -129,6 +207,15 @@ function connectToSocket(){
    width: calc(var(--logger-col-width) + 2.4rem);
  }
 
+ /* Analytics */
+ .analytics {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   gap: 10px;
+ }
+
  @media (min-width: 1024px) {
    .be-logger {
      max-width: 700px;
@@ -138,6 +225,13 @@ function connectToSocket(){
    .description {
      max-width: 700px;
    }
- }
 
+   .analytics {
+     display: flex;
+     flex-direction: row;
+     justify-content: center;
+     max-width: 700px;
+     gap: 10px;
+   }
+ }
 </style>
