@@ -15,6 +15,8 @@
 
 <style scoped>
 .log-entry {
+  position: relative;
+  top: 9px;
   display: flex;
   justify-content: center;
 }

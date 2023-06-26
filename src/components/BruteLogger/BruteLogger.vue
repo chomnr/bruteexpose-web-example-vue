@@ -5,18 +5,19 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 </script>
 
 <template>
-  <div class="be-logger">
-    <div class="title">BruteExpose</div>
-    <div class="description">
-      This website continuously monitors and promptly reports any unauthorized access attempts on my server using BruteExpose. Since no data or services are hosted on the server, neither myself nor any other individuals are at risk.
 
-      <br><br>
-      Repo: <a href="https://github.com/chomnr/BruteExpose">https://github.com/chomnr/BruteExpose</a>
-      <br><br>
-      You can view the analytics <a href="#">here</a>.
-    </div>
+  <div class="title">BruteExpose</div>
+  <div class="description">
+    This website continuously monitors and promptly reports any unauthorized access attempts on my server using BruteExpose. Since no data or services are hosted on the server, neither myself nor any other individuals are at risk.
+
+    <br><br>
+    Repo: <a href="https://github.com/chomnr/BruteExpose">https://github.com/chomnr/BruteExpose</a>
+    <br><br>
+    You can view the analytics <a href="#">here</a>.
+  </div>
+  <div class="be-logger">
+    <BruteLoggerTitle/>
     <div id="brute-log" class="log-table">
-      <BruteLoggerTitle/>
       <brute-logger-item v-for="attempt in attempts">
         <template #country>{{ attempt["country"] }}</template>
         <template #username>{{ attempt["username"] }}</template>
@@ -34,10 +35,12 @@ import {ref, VueElement, watchEffect} from "vue";
 const socket = new WebSocket("ws://localhost:8080");
 
 let attempts = ref([]);
+let isConnected = false;
 
 socket.addEventListener('message', (event) => {
   const response = event.data;
   try {
+    isConnected = true;
     const res_json = JSON.parse(response.toString());
     if (res_json.length > 1) {
       res_json.forEach((log) => {
@@ -51,6 +54,10 @@ socket.addEventListener('message', (event) => {
     return false;
   }
 })
+
+socket.onclose = function (event) {
+  isConnected = false;
+}
 </script>
 
 <style scoped>
@@ -58,6 +65,16 @@ socket.addEventListener('message', (event) => {
    display: flex;
    flex-direction: column;
    padding: 5px;
+
+ }
+
+ #brute-log {
+   animation: fadeIn 3s;
+ }
+
+ @keyframes fadeIn {
+   0% { opacity: 0; }
+   100% { opacity: 1; }
  }
 
  .title {
@@ -82,6 +99,10 @@ socket.addEventListener('message', (event) => {
    .be-logger {
      max-width: 700px;
      padding: 0;
+   }
+
+   .description {
+     max-width: 700px;
    }
  }
 </style>

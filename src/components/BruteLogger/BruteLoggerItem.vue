@@ -43,4 +43,5 @@
 .col.status.failed {
   background: var(--logger-status-blocked);
 }
+
 </style>
