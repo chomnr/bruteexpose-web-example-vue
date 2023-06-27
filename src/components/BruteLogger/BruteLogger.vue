@@ -34,7 +34,8 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 </template>
 
 <script>
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
+import { useWebSocket } from '@vueuse/core'
 
 /* Charts */
 import { Bar } from 'vue-chartjs'
@@ -43,16 +44,24 @@ import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Li
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 /* Charts end here. */
 
-const SOCKET_ADDRESS = "ws://localhost:8080";
-const RECONNECT_TIME = (5 * 1000);
+const SOCKET_ADDRESS = ref("ws://localhost:8080");
 
 let reactivity = reactive({ attempts: [], isConnected: false })
-let socket;
-let reconnect;
-
-connectToSocket();
 
 /* Managing reactive log DOM. */
+useWebSocket(SOCKET_ADDRESS, {
+  autoReconnect: true,
+  onConnected() {
+    reactivity.isConnected = true
+  },
+  onDisconnected() {
+    reactivity.isConnected = false;
+  },
+  onMessage(ws, event) {
+    addLogs(event.data)
+  }
+})
+
 function addLogs(log_data) {
   const json = JSON.parse(log_data);
   if (json.length > 1) {
@@ -61,34 +70,10 @@ function addLogs(log_data) {
     })
     return true;
   }
+
   reactivity.attempts.push(json)
   reactivity.attempts.unshift(json)
-}
-
-/* Managing socket connection */
-function connectToSocket(){
-  try {
-    socket = new WebSocket(SOCKET_ADDRESS)
-  } catch (error) {
-    reactivity.isConnected = false;
-  }
-
-  socket.addEventListener('message', (event) => {
-    const resp = event.data;
-    addLogs(resp)
-  });
-
-  socket.addEventListener('open', (event) => {
-    reactivity.isConnected = true;
-    clearInterval(reconnect)
-  });
-
-  socket.onclose = function (event) {
-    reactivity.isConnected = false;
-    if (!reactivity.isConnected) {
-      reconnect = setInterval(connectToSocket, RECONNECT_TIME)
-    }
-  }
+  reactivity.attempts.pop();
 }
 
 export default {
@@ -113,58 +98,13 @@ export default {
     }
   }
 }
-
-/*
-export default {
-  name: 'App',
-  components: {
-    Bar
-  },
-  data() {
-    return {
-      data: {
-        labels: [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
-        ],
-        datasets: [
-          {
-            label: 'Data One',
-            backgroundColor: '#f87979',
-            data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11]
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-          legend: {
-            display: false
-          }
-        }
-      }
-    }
-  }
-}
-*/
 </script>
 
 <style scoped>
  .be-logger {
    display: flex;
    flex-direction: column;
-   padding: 5px;
+   margin-bottom: 20px;
  }
 
  #brute-log {
