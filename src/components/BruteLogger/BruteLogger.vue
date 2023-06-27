@@ -17,7 +17,7 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
     <br>
   </div>
   <div class="analytics">
-    <Bar :data="chartData" :options="options"  width="150" height="150" />
+   <!-- <BruteLoggerChart ref="bar" width="150" height="150" /> -->
   </div>
   <div class="be-logger">
     <BruteLoggerTitle/>
@@ -34,21 +34,140 @@ import BruteLoggerTitle from "@/components/BruteLogger/BruteLoggerTitle.vue";
 </template>
 
 <script>
+import BruteLoggerChart from "@/components/BruteLogger/BruteLoggerChart.vue";
+import {useWebSocket} from "@vueuse/core";
 import {reactive, ref} from "vue";
-import { useWebSocket } from '@vueuse/core'
+
+// Websocket Configuration.
+const SOCKET_ADDRESS = ref("ws://localhost:8080");
+const CAN_RECONNECT = true;
+
+async function connectToWebSocket() {
+  return new Promise(function (resolve, reject) {
+    useWebSocket(SOCKET_ADDRESS, {
+      autoReconnect: CAN_RECONNECT,
+      onConnected() {
+        reactivity.isConnected = true;
+      },
+      onDisconnected() {
+        reactivity.isConnected = false;
+        reject()
+      },
+      onError() {
+        reactivity.isConnected = false;
+        reject();
+      },
+      onMessage(ws, event){
+        populate(event.data);
+        update();
+        resolve();
+      }
+    });
+  })
+}
+
+// Reactivity
+let reactivity = reactive({
+  attempts: [],
+  isConnected: false
+})
+
+// Interpreting/Manipulating data from Websocket.
+
+let logs;
+let metrics;
+
+function populate(raw_data) {
+  const non_raw_data = parse(raw_data);
+  let a = non_raw_data["mergeA"] // logs
+  let b = non_raw_data["mergeB"]; // metrics
+  if (a === undefined && b === undefined) {
+    // Checks if the data did not use the BruteExpose function.
+    // if mergeA(a) && mergeB(b) are both undefined. That means
+    // the merge function was not used therefore we should be
+    // expecting a SINGLE DATA ROW instead of a collection.
+    logs = non_raw_data;
+    return [non_raw_data]
+  }
+  if (b !== undefined) {
+    metrics = b;
+  }
+  logs = a;
+  return [a, b]
+}
+
+function update() {
+  if (logs !== undefined) {
+    if (logs.length > 1) {
+      logs.forEach((log) => {
+        reactivity.attempts.push(log)
+      })
+      return true;
+    }
+    updateSingleLog();
+  }
+}
+
+function updateSingleLog(){
+  if (logs !== undefined && !Array.isArray(logs) ) {
+    reactivity.attempts.push(logs)
+    reactivity.attempts.unshift(logs)
+    reactivity.attempts.pop();
+  }
+}
+
+function parse(data){
+  let json;
+  try {
+    json = JSON.parse((JSON.parse(data)));
+  } catch (error) {
+    json = JSON.parse(data);
+  }
+  return json;
+}
+
+
+
+export default {
+  name: 'BruteLogger',
+  components: {BruteLoggerChart},
+  async mounted() {
+    await connectToWebSocket();
+  }
+}
 
 /* Charts */
-import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+//import {onMounted, reactive, ref} from "vue";
+//import BruteLoggerChart from "@/components/BruteLogger/BruteLoggerChart.vue";
 
-ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+//import {Bar, Chart} from 'vue-chartjs'
+//import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+//import bruteLoggerChart from "@/components/BruteLogger/BruteLoggerChart.vue";
+
 /* Charts end here. */
+
+/*
+WORKING STARTS HERE
 
 const SOCKET_ADDRESS = ref("ws://localhost:8080");
 
-let reactivity = reactive({ attempts: [], isConnected: false })
+let reactivity = reactive({
+  attempts: [],
+  isConnected: false
+})
 
-/* Managing reactive log DOM. */
+let chart = {
+  labels: null,
+  datasets: [
+    {
+      label: 'Most Attacks By Country',
+      backgroundColor: '#D61531',
+      data: [10, 30, 40, 50]
+    }
+  ]
+}
+
+// Managing reactive log DOM
 useWebSocket(SOCKET_ADDRESS, {
   autoReconnect: true,
   onConnected() {
@@ -62,13 +181,36 @@ useWebSocket(SOCKET_ADDRESS, {
   }
 })
 
+// json hedlpers
+function hackyParse(data){
+  let json;
+  try {
+    json = JSON.parse((JSON.parse(data)));
+  } catch (error) {
+    json = JSON.parse(data);
+  }
+  return json;
+}
+
+
+// Logging
+let metrics;
 function addLogs(log_data) {
-  const json = JSON.parse(log_data);
-  if (json.length > 1) {
-    json.forEach((log) => {
-      reactivity.attempts.push(log)
-    })
-    return true;
+  let json = hackyParse(log_data)
+  let logs = json["mergeA"]
+  metrics = json["mergeB"]
+
+  chart.labels = getMetricKeys(metrics)
+
+
+  // Checks whether the sent request is an actual LIST OF LOGS
+  if (logs !== undefined) {
+    if (logs.length > 1) {
+      logs.forEach((log) => {
+        reactivity.attempts.push(log)
+      })
+      return true;
+    }
   }
 
   reactivity.attempts.push(json)
@@ -76,18 +218,88 @@ function addLogs(log_data) {
   reactivity.attempts.pop();
 }
 
+function getMetricKeys(metrics) {
+  let map = Object.entries(metrics).keys();
+  return Array.from(map.keys());
+}
+
+export default {
+  name: 'App',
+  components: { BruteLoggerChart },
+  mounted() {
+    //this.$refs.bar.loadCustom(["US", "UK", "CN"], [3313, 13232]);
+
+  }
+}
+
+WORKING ENDS HERE.
+*/
+
+/*
+function loadMetricLabels(json) {
+  let map = Object.entries(json);
+  reactivity.barChartLabels = ["US", "TEST"]
+}
+ */
+
+/*
+function loadMetricLabels(json) {
+  let map = Object.entries(json);
+  reactivity.barChartLabels = ["US", "UK", "FLANDER"];
+}
+ */
+
+/* Analytics */
+/*
+let currentLabels;
+function setMetricLabels(json) {
+  if (json !== undefined) {
+    let map = Object.entries(json);
+    let test = Array.from(map.keys());
+    console.log(test)
+    currentLabels = Array.from(map.keys());
+  } else {
+    currentLabels = ["US"]
+  }
+}
+ */
+/*
+export default {
+  name: 'BarChart',
+  components: { Bar },
+  computed: {
+    chartData() { return {
+      labels: ['lol'],
+      datasets: [
+        {
+          label: 'Most Attacks By Country',
+          backgroundColor: '#163531',
+          data: [10000, 5000, 10]
+        }
+      ]
+    }},
+    chartOptions() { return {
+      responsive: true,
+      maintainAspectRatio: false,
+    }},
+  }
+}
+*/
+
+/* Charts */
+/*
 export default {
   name: 'BarChart',
   components: { Bar },
   data() {
     return {
-      chartData: {
-        labels: [ 'US', 'UK', 'CN', "IR", "AF", "KR", "PG", "ZE", "DA", "ND"],
+      barChartData: {
+        labels: [],
         datasets: [
           {
             label: 'Most Attacks By Country',
             backgroundColor: '#163531',
-            data: [10000, 5000, 300]
+            data: [10000, 5000, 10]
           }
         ]
       },
@@ -96,8 +308,21 @@ export default {
         maintainAspectRatio: false,
       }
     }
-  }
+  },
 }
+*/
+/*
+chartData: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Most Attacks By Country',
+            backgroundColor: '#163531',
+            data: [10000, 5000, 10]
+          }
+        ]
+      }
+ */
 </script>
 
 <style scoped>
