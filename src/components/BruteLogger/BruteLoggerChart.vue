@@ -1,29 +1,33 @@
 <template>
   <div>
-    <Bar :data="localChartData" :options="localChartOptions" ref="bar" />
+    <Bar :data="chartData" :options="chartOptions" ref="bar" />
   </div>
 </template>
 
 <script>
 import { Bar } from 'vue-chartjs';
 
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
 export default {
   name: 'BruteLoggerChart',
   components: { Bar },
   data() {
     return {
-      localChartData: {
-        labels: ['lol'],
+      chartData: {
+        labels: ['UNDEFINED'],
         datasets: [
           {
             label: 'Most Attacks By Country',
             backgroundColor: '#163531',
-            data: [10000, 5000, 10]
+            data: [0]
           }
         ]
       },
-      localChartOptions: {
-        responsive: true,
+      chartOptions: {
+        responsive: false,
         maintainAspectRatio: false,
       }
     };
@@ -33,12 +37,12 @@ export default {
   },
   methods: {
     loadCustom(labels = [], data = [], ) {
-      this.localChartData = {
+      this.chartData = {
         labels: labels,
         datasets: [
           {
             label: 'Most Attacks By Country',
-            backgroundColor: '#D61531',
+            backgroundColor: '#163531',
             data: data
           }
         ]
@@ -46,51 +50,5 @@ export default {
     }
   }
 };
+
 </script>
-
-<!--
-loadDefault() {
-      let newArray = [];
-      for (let i = 0; i < 3; i++) {
-        let randomValue = Math.floor(Math.random() * 10);
-        newArray.push(randomValue);
-      }
-      console.log('NEW DATA');
-
-      this.localChartData = {
-        labels: ['test'],
-        datasets: [
-          {
-            label: 'Most Attacks By Country',
-            backgroundColor: '#D61531',
-            data: newArray
-          }
-        ]
-      };
-    }
--->
-
-
-
-<!--
-export default {
-  name: 'BruteLoggerChart',
-  components: { Bar },
-  computed: {
-    chartData() { return {
-      labels: ['lol'],
-      datasets: [
-        {
-          label: 'Most Attacks By Country',
-          backgroundColor: '#163531',
-          data: [10000, 5000, 10]
-        }
-      ]
-    }},
-    chartOptions() { return {
-      responsive: true,
-      maintainAspectRatio: false,
-    }},
-  }
-}
- -->
