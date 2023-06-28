@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Bar :data="chartData" :options="chartOptions" ref="bar" />
+    <Bar :data="chartData" :options="chartOptions" />
   </div>
 </template>
 
@@ -20,20 +20,20 @@ export default {
         labels: ['UNDEFINED'],
         datasets: [
           {
-            label: 'Most Attacks By Country',
-            backgroundColor: '#163531',
+            label: 'UNDEFINED',
+            backgroundColor: '#661b1c',
             data: [0]
           }
         ]
       },
       chartOptions: {
-        responsive: false,
-        maintainAspectRatio: false,
+        responsive: true,
+        maintainAspectRatio: true,
       }
     };
   },
   mounted() {
-    this.loadCustom(["hello"], [33])
+    this.loadCustom(["Loading..."], [0])
   },
   methods: {
     loadCustom(labels = [], data = [], ) {
@@ -42,7 +42,7 @@ export default {
         datasets: [
           {
             label: 'Most Attacks By Country',
-            backgroundColor: '#163531',
+            backgroundColor: '#661b1c',
             data: data
           }
         ]
