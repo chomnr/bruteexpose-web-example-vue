@@ -18,9 +18,6 @@ import BruteLogger from "@/components/BruteLogger/BruteLogger.vue";
 
   <main>
     <BruteLogger/>
-    <!--
-    <TheWelcome />
-    -->
   </main>
 </template>
 
