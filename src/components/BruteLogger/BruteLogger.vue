@@ -38,8 +38,8 @@ import BruteLoggerChart from "@/components/BruteLogger/BruteLoggerChart.vue";
 import {useWebSocket} from "@vueuse/core";
 import {reactive, ref, watch} from "vue";
 
-// Websocket Configuration.
-const SOCKET_ADDRESS = "wss://be-feed.zeljko.me:8443";
+// Websocket Configuration. or ws://
+const SOCKET_ADDRESS = "wss://your_websocket_server";
 const CAN_RECONNECT = true;
 
 // Vue Reactivity Variables
