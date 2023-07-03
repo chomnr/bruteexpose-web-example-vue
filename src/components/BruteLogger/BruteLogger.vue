@@ -39,7 +39,7 @@ import {useWebSocket} from "@vueuse/core";
 import {reactive, ref, watch} from "vue";
 
 // Websocket Configuration.
-const SOCKET_ADDRESS = ref("ws://localhost:8080");
+const SOCKET_ADDRESS = "wss://be-feed.zeljko.me:8443";
 const CAN_RECONNECT = true;
 
 // Vue Reactivity Variables
@@ -62,7 +62,7 @@ async function connectToWebSocket() {
       },
       onError() {
         reactivity.isConnected = false;
-        reject();
+        //reject();
       },
       onMessage(ws, event){
         populate(event.data);
@@ -107,7 +107,6 @@ function update() {
     updateSingleLog();
   }
 }
-
 
 function updateSingleLog(){
   if (logs !== undefined && !Array.isArray(logs) ) {
